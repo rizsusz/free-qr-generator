@@ -1,75 +1,182 @@
 <!DOCTYPE html>
 <html lang="hu">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QR kód generátor</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            padding: 20px;
-        }
-        input, button {
-            font-size: 18px;
-            padding: 10px;
-            margin: 10px;
-            width: 80%;
-            max-width: 400px;
-        }
-        canvas {
-            margin-top: 20px;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>QR kód generátor</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f3f4f6;
+      --card-bg: #ffffff;
+      --text: #111827;
+      --input: #d1d5db;
+      --button: #2563eb;
+      --button-hover: #1d4ed8;
+    }
+
+    [data-theme="dark"] {
+      --bg: #111827;
+      --card-bg: #1f2937;
+      --text: #f9fafb;
+      --input: #374151;
+      --button: #3b82f6;
+      --button-hover: #60a5fa;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 30px 15px;
+      transition: all 0.3s ease;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+      font-size: 28px;
+      text-align: center;
+    }
+
+    .container {
+      background: var(--card-bg);
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 420px;
+      text-align: center;
+      transition: background 0.3s ease;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--input);
+      border-radius: 8px;
+      font-size: 16px;
+      margin-bottom: 15px;
+      background: transparent;
+      color: var(--text);
+    }
+
+    button {
+      padding: 12px 18px;
+      margin: 5px 5px 10px 5px;
+      font-size: 16px;
+      background-color: var(--button);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    button:hover {
+      background-color: var(--button-hover);
+    }
+
+    .qr-wrapper {
+      margin-top: 20px;
+      padding: 12px;
+      border: 2px dashed var(--input);
+      border-radius: 12px;
+      display: inline-block;
+    }
+
+    .toggle-theme {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      font-size: 14px;
+      background: none;
+      border: 1px solid var(--input);
+      color: var(--text);
+      padding: 6px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    @media (max-width: 500px) {
+      h1 {
+        font-size: 24px;
+      }
+
+      button {
+        width: 100%;
+      }
+
+      .toggle-theme {
+        top: 10px;
+        right: 10px;
+      }
+    }
+  </style>
 </head>
-<body>
-    <h1>QR kód generátor</h1>
-    <input type="text" id="linkInput" placeholder="Illeszd be a linket">
-    <br>
+<body data-theme="light">
+  <button class="toggle-theme" onclick="toggleTheme()">🌗 Mód váltás</button>
+
+  <h1>QR kód generátor</h1>
+  <div class="container">
+    <input type="text" id="linkInput" placeholder="Illeszd be a linket ide...">
     <button onclick="generateQR()">QR generálása</button>
     <button onclick="saveQR()">Mentés PNG-be</button>
-    <br>
-    <canvas id="qrCanvas"></canvas>
+    <div class="qr-wrapper">
+      <canvas id="qrCanvas"></canvas>
+    </div>
+  </div>
 
-    <script>
-        const qr = new QRious({
-            element: document.getElementById('qrCanvas'),
-            size: 250,
-            value: ''
-        });
+  <script>
+    const qr = new QRious({
+      element: document.getElementById('qrCanvas'),
+      size: 250,
+      value: ''
+    });
 
-        function generateQR() {
-            const input = document.getElementById('linkInput').value.trim();
-            if (input === '') {
-                alert('Kérlek, illessz be egy linket!');
-                return;
-            }
-            qr.value = input;
-        }
+    function generateQR() {
+      const input = document.getElementById('linkInput').value.trim();
+      if (input === '') {
+        alert('Kérlek, illessz be egy linket!');
+        return;
+      }
+      qr.value = input;
+    }
 
-        function generateRandomName(length = 5) {
-            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-            let result = '';
-            for (let i = 0; i < length; i++) {
-                result += chars.charAt(Math.floor(Math.random() * chars.length));
-            }
-            return result;
-        }
+    function generateRandomName(length = 5) {
+      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+      let result = '';
+      for (let i = 0; i < length; i++) {
+        result += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      return result;
+    }
 
-        function saveQR() {
-            const qrCanvas = document.querySelector('canvas');
-            if (!qrCanvas) {
-                alert("QR-kód még nem lett létrehozva.");
-                return;
-            }
+    function saveQR() {
+      const qrCanvas = document.querySelector('canvas');
+      if (!qrCanvas || qr.value === '') {
+        alert("QR-kód még nem lett létrehozva.");
+        return;
+      }
 
+      const link = document.createElement('a');
+      link.href = qrCanvas.toDataURL("image/png");
+      link.download = generateRandomName() + ".png";
+      link.click();
+    }
 
-            const link = document.createElement('a');
-            link.href = qrCanvas.toDataURL("image/png");
-            link.download = generateRandomName() + ".png";
-            link.click();
-        }
-    </script>
+    function toggleTheme() {
+      const body = document.body;
+      const current = body.getAttribute('data-theme');
+      body.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
+    }
+  </script>
 </body>
 </html>
