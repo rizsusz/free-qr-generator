@@ -41,7 +41,7 @@
     }
 
     h1 {
-      margin-bottom: 20px;
+      margin-bottom: 10px;
       font-size: 28px;
       text-align: center;
     }
@@ -93,9 +93,6 @@
     }
 
     .toggle-theme {
-      position: fixed;
-      top: 20px;
-      right: 20px;
       font-size: 14px;
       background: none;
       border: 1px solid var(--input);
@@ -103,6 +100,12 @@
       padding: 6px 10px;
       border-radius: 6px;
       cursor: pointer;
+      transition: background 0.3s;
+      margin-bottom: 20px;
+    }
+
+    .toggle-theme:hover {
+      background-color: var(--input);
     }
 
     @media (max-width: 500px) {
@@ -113,18 +116,16 @@
       button {
         width: 100%;
       }
-
-      .toggle-theme {
-        top: 10px;
-        right: 10px;
-      }
     }
   </style>
 </head>
 <body data-theme="light">
-  <button class="toggle-theme" onclick="toggleTheme()">🌗 Mód váltás</button>
 
   <h1>QR kód generátor</h1>
+  <div style="text-align: center;">
+    <button class="toggle-theme" onclick="toggleTheme()">🌗 Mód váltás</button>
+  </div>
+
   <div class="container">
     <input type="text" id="linkInput" placeholder="Illeszd be a linket ide...">
     <button onclick="generateQR()">QR generálása</button>
@@ -171,7 +172,6 @@
       link.download = generateRandomName() + ".png";
       link.click();
     }
-
 
     function toggleTheme() {
       const body = document.body;
