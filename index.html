@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <title>QR kód generátor</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; margin: 20px; }
+    input[type="text"] { width: 90%; padding: 10px; font-size: 16px; }
+    button { padding: 10px 20px; margin-top: 10px; font-size: 16px; cursor: pointer; }
+    #qrcode { margin-top: 20px; }
+  </style>
+</head>
+<body>
+  <h2>QR Kód Generátor</h2>
+  <input type="text" id="linkInput" placeholder="Illessz be egy linket">
+  <button onclick="generateQRCode()">QR kód létrehozása</button>
+  <div id="qrcode"></div>
+  <script>
+    function generateQRCode() {
+      const input = document.getElementById('linkInput').value;
+      const qrContainer = document.getElementById('qrcode');
+      qrContainer.innerHTML = '';
+      if (input.trim() !== '') {
+        new QRCode(qrContainer, {
+          text: input,
+          width: 200,
+          height: 200
+        });
+      } else {
+        alert("Kérlek, adj meg egy érvényes linket!");
+      }
+    }
+  </script>
+</body>
+</html>
