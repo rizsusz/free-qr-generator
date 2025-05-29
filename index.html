@@ -1,36 +1,74 @@
 <!DOCTYPE html>
 <html lang="hu">
 <head>
-  <meta charset="UTF-8">
-  <title>QR kód generátor</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-  <style>
-    body { font-family: Arial, sans-serif; text-align: center; margin: 20px; }
-    input[type="text"] { width: 90%; padding: 10px; font-size: 16px; }
-    button { padding: 10px 20px; margin-top: 10px; font-size: 16px; cursor: pointer; }
-    #qrcode { margin-top: 20px; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR kód generátor</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+        input, button {
+            font-size: 18px;
+            padding: 10px;
+            margin: 10px;
+            width: 80%;
+            max-width: 400px;
+        }
+        canvas {
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
-  <h2>QR Kód Generátor</h2>
-  <input type="text" id="linkInput" placeholder="Illessz be egy linket">
-  <button onclick="generateQRCode()">QR kód létrehozása</button>
-  <div id="qrcode"></div>
-  <script>
-    function generateQRCode() {
-      const input = document.getElementById('linkInput').value;
-      const qrContainer = document.getElementById('qrcode');
-      qrContainer.innerHTML = '';
-      if (input.trim() !== '') {
-        new QRCode(qrContainer, {
-          text: input,
-          width: 200,
-          height: 200
+    <h1>QR kód generátor</h1>
+    <input type="text" id="linkInput" placeholder="Illeszd be a linket">
+    <br>
+    <button onclick="generateQR()">QR generálása</button>
+    <button onclick="saveQR()">Mentés PNG-be</button>
+    <br>
+    <canvas id="qrCanvas"></canvas>
+
+    <script>
+        const qr = new QRious({
+            element: document.getElementById('qrCanvas'),
+            size: 250,
+            value: ''
         });
-      } else {
-        alert("Kérlek, adj meg egy érvényes linket!");
-      }
-    }
-  </script>
+
+        function generateQR() {
+            const input = document.getElementById('linkInput').value.trim();
+            if (input === '') {
+                alert('Kérlek, illessz be egy linket!');
+                return;
+            }
+            qr.value = input;
+        }
+
+        function generateRandomName(length = 5) {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            let result = '';
+            for (let i = 0; i < length; i++) {
+                result += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return result;
+        }
+
+        function saveQR() {
+            const qrCanvas = document.querySelector('canvas');
+            if (!qrCanvas) {
+                alert("QR-kód még nem lett létrehozva.");
+                return;
+            }
+
+            const link = document.createElement('a');
+            link.href = qrCanvas.toDataURL("image/png");
+            link.download = generateRandomName() + ".png";
+            link.click();
+        }
+    </script>
 </body>
 </html>
