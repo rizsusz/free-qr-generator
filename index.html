@@ -16,7 +16,6 @@
       --button-hover: #1d4ed8;
     }
 
-
     [data-theme="dark"] {
       --bg: #111827;
       --card-bg: #1f2937;
@@ -58,7 +57,7 @@
       transition: background 0.3s ease;
     }
 
-    input[type="text"] {
+    input[type="text"], select {
       width: 100%;
       padding: 12px;
       border: 1px solid var(--input);
@@ -129,27 +128,46 @@
 
   <div class="container">
     <input type="text" id="linkInput" placeholder="Illeszd be a linket ide...">
+
+    <select id="colorSelect">
+      <option value="#000000">Fekete</option>
+      <option value="#1D4ED8">Kék</option>
+      <option value="#10B981">Zöld</option>
+      <option value="#F59E0B">Narancs</option>
+      <option value="#DC2626">Piros</option>
+      <option value="#6B21A8">Lila</option>
+    </select>
+
     <button onclick="generateQR()">QR generálása</button>
     <button onclick="saveQR()">Mentés PNG-be</button>
+
     <div class="qr-wrapper">
       <canvas id="qrCanvas"></canvas>
     </div>
   </div>
 
   <script>
+    const qrCanvas = document.getElementById('qrCanvas');
+    const colorSelect = document.getElementById('colorSelect');
+
     const qr = new QRious({
-      element: document.getElementById('qrCanvas'),
+      element: qrCanvas,
       size: 250,
-      value: ''
+      value: '',
+      foreground: colorSelect.value
     });
 
     function generateQR() {
       const input = document.getElementById('linkInput').value.trim();
+      const selectedColor = colorSelect.value;
       if (input === '') {
         alert('Kérlek, illessz be egy linket!');
         return;
       }
-      qr.value = input;
+      qr.set({
+        value: input,
+        foreground: selectedColor
+      });
     }
 
     function generateRandomName(length = 5) {
@@ -162,8 +180,7 @@
     }
 
     function saveQR() {
-      const qrCanvas = document.querySelector('canvas');
-      if (!qrCanvas || qr.value === '') {
+      if (qr.value === '') {
         alert("QR-kód még nem lett létrehozva.");
         return;
       }
