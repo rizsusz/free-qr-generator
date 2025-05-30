@@ -1,180 +1,189 @@
 <!DOCTYPE html>
 <html lang="hu">
 <head>
-  <meta charset="UTF-8" />
-  <title>AI Kép Generátor</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <style>
-    :root {
-      --bg: #f3f4f6;
-      --card-bg: #ffffff;
-      --text: #111827;
-      --input: #d1d5db;
-    }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>AI Kép Generátor</title>
+<style>
+  /* Sötét mód alapszínek */
+  body {
+    background-color: #121212;
+    color: #eee;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0; padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+  }
 
+  header {
+    background-color: #1e1e1e;
+    width: 100%;
+    padding: 15px 20px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.7);
+    display: flex;
+    justify-content: center;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
 
+  select {
+    background-color: #2c2c2c;
+    color: #eee;
+    border: 1px solid #555;
+    padding: 8px 12px;
+    border-radius: 5px;
+    font-size: 1.1em;
+    cursor: pointer;
+  }
 
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background-color: var(--bg);
-      color: var(--text);
-    }
+  select:hover {
+    border-color: #888;
+  }
 
-    header {
-      background-color: var(--card-bg);
-      padding: 20px;
-      text-align: center;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
+  main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 20px;
+    width: 100%;
+    max-width: 600px;
+  }
 
-    h1 {
-      margin: 0;
-    }
-.dropdown-center {
-  display: flex;
-  justify-content: center;
-  margin-top: 15px;
-}
+  label {
+    display: block;
+    margin-top: 15px;
+    margin-bottom: 5px;
+    font-weight: 600;
+  }
 
-.dropdown-center select {
-  padding: 10px;
-  font-size: 16px;
-  border-radius: 8px;
-  border: 1px solid var(--input);
-  background-color: var(--card-bg);
-  color: var(--text);
-}
+  input[type="text"] {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 1.1em;
+    border-radius: 5px;
+    border: 1px solid #555;
+    background-color: #222;
+    color: #eee;
+  }
 
+  button {
+    margin-top: 20px;
+    background-color: #3a86ff;
+    border: none;
+    padding: 12px 25px;
+    color: white;
+    font-weight: 700;
+    font-size: 1.1em;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
 
-    #pageSelect {
-      padding: 10px;
-      font-size: 16px;
-      border-radius: 8px;
-      border: 1px solid var(--input);
-      background-color: var(--card-bg);
-      color: var(--text);
-    }
+  button:hover {
+    background-color: #2564d8;
+  }
 
-    .container {
-      max-width: 600px;
-      margin: 50px auto;
-      padding: 20px;
-      background-color: var(--card-bg);
-      border-radius: 12px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-      text-align: center;
-    }
+  #loading {
+    margin-top: 25px;
+    font-size: 1.2em;
+    color: #aaa;
+    display: none;
+  }
 
-    input[type="text"] {
-      width: 80%;
-      padding: 10px;
-      margin-bottom: 20px;
-      border: 1px solid var(--input);
-      border-radius: 6px;
-      font-size: 16px;
-    }
-
-    button {
-      padding: 10px 20px;
-      font-size: 16px;
-      background-color: #2563eb;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-
-    .loading {
-      margin-top: 20px;
-      font-size: 16px;
-    }
-
-    .spinner {
-      border: 6px solid #f3f3f3;
-      border-top: 6px solid #2563eb;
-      border-radius: 50%;
-      width: 40px;
-      height: 40px;
-      animation: spin 1s linear infinite;
-      margin: 10px auto;
-    }
-
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-
-    #imageResult {
-      margin-top: 20px;
-      max-width: 100%;
-      display: none;
-    }
-  </style>
+  #result img {
+    margin-top: 30px;
+    max-width: 100%;
+    border-radius: 10px;
+    box-shadow: 0 0 10px #3a86ff;
+  }
+</style>
 </head>
 <body>
 
-  <div class="dropdown-center">
-    <select id="pageSelect" onchange="location = this.value;">
-      <option value="index.html">QR kód</option>
-      <option value="password.html">Jelszó</option>
-      <option value="ai.html" selected>AI kép</option>
-    </select>
-  </div>
+<header>
+  <select id="pageSelect" aria-label="Oldal választó">
+    <option value="index.html">QR Kód Generátor</option>
+    <option value="password.html">Jelszó Generátor</option>
+    <option value="ai-image.html" selected>AI Kép Generátor</option>
+  </select>
+</header>
 
-  <header>
-    <h1>AI Kép Generátor</h1>
-  </header>
+<main>
+  <h1>AI Kép Generátor</h1>
 
-  <div class="container">
-    <input type="text" id="prompt" placeholder="Írd be, mit szeretnél látni pl. 'cica űrhajóban'" />
-    <button onclick="generateImage()">Kép generálása</button>
+  <label for="promptInput">Írd be a képleírást (prompt):</label>
+  <input type="text" id="promptInput" placeholder="Pl.: aranyos macska űrhajóban" value="aranyos macska űrhajóban" />
 
-    <div id="loading" class="loading" style="display: none;">
-      <div class="spinner"></div>
-      Kép generálása folyamatban...
-    </div>
+  <button id="generateBtn">Kép generálása</button>
 
-    <img id="imageResult" />
-  </div>
+  <div id="loading">Kép generálása folyamatban... ⏳</div>
 
-  <script>
-    async function generateImage() {
-      const prompt = document.getElementById("prompt").value.trim();
-      const img = document.getElementById("imageResult");
-      const loader = document.getElementById("loading");
+  <div id="result"></div>
+</main>
 
-      if (!prompt) return;
+<script>
+  // Navigáció a lenyíló menüből
+  const pageSelect = document.getElementById('pageSelect');
+  pageSelect.addEventListener('change', () => {
+    location.href = pageSelect.value;
+  });
 
-      // Mutatjuk a betöltést
-      loader.style.display = "block";
-      img.style.display = "none";
+  const generateBtn = document.getElementById('generateBtn');
+  const promptInput = document.getElementById('promptInput');
+  const loading = document.getElementById('loading');
+  const result = document.getElementById('result');
 
-      try {
-        const response = await fetch("https://api.deepai.org/api/text2img", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Api-Key": "quickstart-QUdJIGlzIGNvbWluZy4uLi4K"
-          },
-          body: JSON.stringify({ text: prompt })
-        });
-
-        const data = await response.json();
-
-        if (data.output_url) {
-          img.src = data.output_url;
-          img.style.display = "block";
-        } else {
-          alert("Hiba történt a kép generálásakor.");
-        }
-      } catch (error) {
-        alert("Hiba történt a kép generálásakor.");
-      } finally {
-        loader.style.display = "none";
-      }
+  async function generateImage() {
+    const prompt = promptInput.value.trim();
+    if (!prompt) {
+      alert("Kérlek, adj meg egy képleírást!");
+      return;
     }
-  </script>
+
+    loading.style.display = 'block';
+    result.innerHTML = '';
+
+    try {
+      // Craiyon API URL
+      const response = await fetch('https://backend.craiyon.com/generate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ prompt: prompt })
+      });
+
+      if (!response.ok) throw new Error('Nem sikerült a kapcsolat.');
+
+      const data = await response.json();
+      // data.images egy tömb base64 képekből
+
+      loading.style.display = 'none';
+
+      if (data.images && data.images.length > 0) {
+        // Megjelenítjük az első képet
+        const img = document.createElement('img');
+        img.src = 'data:image/png;base64,' + data.images[0];
+        img.alt = prompt;
+        result.appendChild(img);
+      } else {
+        result.textContent = 'Nem érkezett kép az API-tól.';
+      }
+    } catch (error) {
+      loading.style.display = 'none';
+      result.textContent = 'Hiba történt a kép generálásakor: ' + error.message;
+    }
+  }
+
+  generateBtn.addEventListener('click', generateImage);
+
+  // Alapból legyen generált kép betöltéskor
+  window.addEventListener('load', generateImage);
+</script>
 
 </body>
 </html>
