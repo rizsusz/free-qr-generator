@@ -2,151 +2,166 @@
 <html lang="hu">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>AI Képgenerátor</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  <title>AI Kép Generátor</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
+    :root {
+      --bg: #f3f4f6;
+      --card-bg: #ffffff;
+      --text: #111827;
+      --input: #d1d5db;
+    }
+
     body {
-      font-family: 'Inter', sans-serif;
-      background-color: #f9fafb;
       margin: 0;
-      padding: 0;
+      font-family: Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
     }
 
     header {
-      background-color: #1f2937;
-      padding: 15px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      background-color: var(--card-bg);
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
 
-    header h1 {
-      color: white;
+    h1 {
       margin: 0;
-      font-size: 20px;
     }
 
-    nav a {
-      color: white;
-      margin-left: 20px;
-      text-decoration: none;
-      font-weight: 600;
+    .dropdown-wrapper {
+      position: absolute;
+      top: 15px;
+      right: 15px;
     }
 
-    nav a:hover {
-      text-decoration: underline;
+    #pageSelect {
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: 1px solid var(--input);
+      background-color: var(--card-bg);
+      color: var(--text);
     }
 
     .container {
-      padding: 30px 20px;
-      max-width: 480px;
-      margin: 0 auto;
-      background-color: white;
-      margin-top: 30px;
+      max-width: 600px;
+      margin: 50px auto;
+      padding: 20px;
+      background-color: var(--card-bg);
       border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      text-align: center;
     }
 
     input[type="text"] {
-      width: 100%;
-      padding: 12px;
-      margin-bottom: 15px;
-      border: 1px solid #d1d5db;
-      border-radius: 8px;
+      width: 80%;
+      padding: 10px;
+      margin-bottom: 20px;
+      border: 1px solid var(--input);
+      border-radius: 6px;
       font-size: 16px;
     }
 
     button {
+      padding: 10px 20px;
+      font-size: 16px;
       background-color: #2563eb;
       color: white;
-      padding: 12px 18px;
       border: none;
-      border-radius: 8px;
-      font-size: 16px;
+      border-radius: 6px;
       cursor: pointer;
-      width: 100%;
-    }
-pageSelect {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  padding: 10px;
-  font-size: 16px;
-  border-radius: 8px;
-  border: 1px solid var(--input);
-  background-color: var(--card-bg);
-  color: var(--text);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-    button:hover {
-      background-color: #1d4ed8;
     }
 
-    .image-output {
+    .loading {
       margin-top: 20px;
-      text-align: center;
+      font-size: 16px;
     }
 
-    .image-output iframe {
-      width: 100%;
-      height: 480px;
-      border: none;
-      border-radius: 8px;
+    .spinner {
+      border: 6px solid #f3f3f3;
+      border-top: 6px solid #2563eb;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 10px auto;
     }
 
-    @media (max-width: 600px) {
-      header {
-        flex-direction: column;
-        align-items: flex-start;
-      }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
 
-      nav a {
-        margin-left: 0;
-        margin-top: 10px;
-        display: block;
-      }
+    #imageResult {
+      margin-top: 20px;
+      max-width: 100%;
+      display: none;
     }
   </style>
 </head>
 <body>
 
-  <!-- Navigáció -->
-  <nav>
-    <select id="navSelect" onchange="location = this.value;">
-      <option value="index.html">QR kód generátor</option>
-      <option value="password.html" >Jelszógenerátor</option>
-      <option value="ai.html" selected>AI képgenerátor</option>
+  <div class="dropdown-wrapper">
+    <select id="pageSelect" onchange="location = this.value;">
+      <option value="index.html">QR kód</option>
+      <option value="password.html">Jelszó</option>
+      <option value="ai.html" selected>AI kép</option>
     </select>
-  </nav>
+  </div>
 
+  <header>
+    <h1>AI Kép Generátor</h1>
   </header>
 
   <div class="container">
-    <h2>🎨 AI Képgenerátor</h2>
-    <input type="text" id="prompt" placeholder="Írj egy leírást pl. 'macska űrruhában'..." />
+    <input type="text" id="prompt" placeholder="Írd be, mit szeretnél látni pl. 'cica űrhajóban'" />
     <button onclick="generateImage()">Kép generálása</button>
-    <div class="image-output" id="output"></div>
+
+    <div id="loading" class="loading" style="display: none;">
+      <div class="spinner"></div>
+      Kép generálása folyamatban...
+    </div>
+
+    <img id="imageResult" />
   </div>
 
   <script>
-    function generateImage() {
+    async function generateImage() {
       const prompt = document.getElementById("prompt").value.trim();
-      const output = document.getElementById("output");
+      const img = document.getElementById("imageResult");
+      const loader = document.getElementById("loading");
 
-      if (!prompt) {
-        alert("Kérlek, írj be egy leírást!");
-        return;
+      if (!prompt) return;
+
+      // Mutatjuk a betöltést
+      loader.style.display = "block";
+      img.style.display = "none";
+
+      try {
+        const response = await fetch("https://api.deepai.org/api/text2img", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Api-Key": "quickstart-QUdJIGlzIGNvbWluZy4uLi4K"
+          },
+          body: JSON.stringify({ text: prompt })
+        });
+
+        const data = await response.json();
+
+        if (data.output_url) {
+          img.src = data.output_url;
+          img.style.display = "block";
+        } else {
+          alert("Hiba történt a kép generálásakor.");
+        }
+      } catch (error) {
+        alert("Hiba történt a kép generálásakor.");
+      } finally {
+        loader.style.display = "none";
       }
-
-      const encodedPrompt = encodeURIComponent(prompt);
-      const url = `https://imggen.ai/?q=${encodedPrompt}`;
-
-      output.innerHTML = `
-        <p><strong>Kép generálva:</strong> "${prompt}"</p>
-        <iframe src="${url}"></iframe>
-      `;
     }
   </script>
 
