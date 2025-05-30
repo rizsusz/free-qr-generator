@@ -16,7 +16,6 @@
       --button-hover: #1d4ed8;
     }
 
-
     [data-theme="dark"] {
       --bg: #111827;
       --card-bg: #1f2937;
@@ -139,7 +138,6 @@
       <option value="#6B21A8">Lila</option>
     </select>
 
-    <button onclick="generateQR()">QR generálása</button>
     <button onclick="saveQR()">Mentés PNG-be</button>
 
     <div class="qr-wrapper">
@@ -159,28 +157,24 @@
       foreground: colorSelect.value
     });
 
-    function generateQR() {
-      const input = linkInput.value.trim();
-      const selectedColor = colorSelect.value;
-      if (input === '') {
-        alert('Kérlek, illessz be egy linket!');
-        return;
-      }
-      qr.set({
-        value: input,
-        foreground: selectedColor
-      });
-    }
-
-    function updateQRColor() {
-      if (qr.value !== '') {
+    function updateQR() {
+      const value = linkInput.value.trim();
+      const color = colorSelect.value;
+      if (value !== '') {
         qr.set({
-          foreground: colorSelect.value
+          value: value,
+          foreground: color
+        });
+      } else {
+        qr.set({
+          value: '',
+          foreground: color
         });
       }
     }
 
-    colorSelect.addEventListener('change', updateQRColor);
+    colorSelect.addEventListener('change', updateQR);
+    linkInput.addEventListener('input', updateQR);
 
     function generateRandomName(length = 5) {
       const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
