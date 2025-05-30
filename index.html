@@ -16,7 +16,6 @@
       --button-hover: #1d4ed8;
     }
 
-
     [data-theme="dark"] {
       --bg: #111827;
       --card-bg: #1f2937;
@@ -27,12 +26,8 @@
     }
 
     * {
-      box-sizing: border-<nav>
-  <select onchange="location = this.value;">
-    <option value="index.html">QR kód generátor</option>
-    <option value="password.html">Jelszógenerátor</option>
-  </select>
-</nav>
+      box-sizing: border-box;
+    }
 
     body {
       font-family: 'Inter', sans-serif;
@@ -113,6 +108,19 @@
       background-color: var(--input);
     }
 
+    nav {
+      margin-bottom: 20px;
+    }
+
+    select#navSelect {
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--input);
+      font-size: 16px;
+      background: var(--card-bg);
+      color: var(--text);
+    }
+
     @media (max-width: 500px) {
       h1 {
         font-size: 24px;
@@ -126,7 +134,16 @@
 </head>
 <body data-theme="light">
 
+  <!-- Navigációs lenyíló menü -->
+  <nav>
+    <select id="navSelect" onchange="location = this.value;">
+      <option value="index.html" selected>QR kód generátor</option>
+      <option value="password.html">Jelszógenerátor</option>
+    </select>
+  </nav>
+
   <h1>QR kód generátor</h1>
+
   <div style="text-align: center;">
     <button class="toggle-theme" onclick="toggleTheme()">🌗 Mód váltás</button>
   </div>
@@ -165,17 +182,10 @@
     function updateQR() {
       const value = linkInput.value.trim();
       const color = colorSelect.value;
-      if (value !== '') {
-        qr.set({
-          value: value,
-          foreground: color
-        });
-      } else {
-        qr.set({
-          value: '',
-          foreground: color
-        });
-      }
+      qr.set({
+        value: value,
+        foreground: color
+      });
     }
 
     colorSelect.addEventListener('change', updateQR);
