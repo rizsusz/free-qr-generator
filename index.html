@@ -6,45 +6,108 @@
   <title>QR Kód Generátor</title>
   <link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/5/5b/Qr-128.png" type="image/png">
   <style>
+    :root {
+      --primary-color: #333;
+      --accent-color: #4CAF50;
+      --bg-color: #f0f0f0;
+      --card-bg: #fff;
+    }
+
     body {
       font-family: 'Segoe UI', sans-serif;
-      background-color: #f5f5f5;
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg-color);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    header {
+      background-color: var(--primary-color);
+      color: white;
       padding: 20px;
+      width: 100%;
       text-align: center;
-      
+      font-size: 1.8rem;
     }
-    h1 {
-      color: #333;
+
+    .container {
+      background: var(--card-bg);
+      margin: 30px;
+      padding: 20px 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      max-width: 500px;
+      width: 90%;
+      text-align: center;
     }
-    input, select, button {
-      padding: 10px;
-      font-size: 16px;
-      margin: 10px;
+
+    input[type="text"], select {
+      width: 100%;
+      padding: 12px;
+      margin: 12px 0;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
     }
+
+    button {
+      background-color: var(--accent-color);
+      color: white;
+      padding: 12px 20px;
+      margin: 12px 6px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
     canvas {
       margin-top: 20px;
+      max-width: 100%;
+    }
+
+    @media (max-width: 600px) {
+      header {
+        font-size: 1.4rem;
+      }
+      .container {
+        margin: 15px;
+        padding: 15px 20px;
+      }
     }
   </style>
 </head>
 <body>
-  <h1>QR Kód Generátor</h1>
 
-  <input type="text" id="linkInput" placeholder="Illeszd be a linket" style="width: 80%;"><br>
+  <header>QR Kód Generátor</header>
 
-  <label for="colorSelect">QR szín:</label>
-  <select id="colorSelect">
-    <option value="#000000">Fekete</option>
-    <option value="#1a73e8">Kék</option>
-    <option value="#e91e63">Rózsaszín</option>
-    <option value="#4caf50">Zöld</option>
-    <option value="#ff5722">Narancs</option>
-  </select>
+  <div class="container">
+    <input type="text" id="linkInput" placeholder="Illeszd be a linket...">
 
-  <br><br>
-  <button onclick="generateQRCode()">QR kód generálása</button>
-  <button onclick="downloadQRCode()">Letöltés PNG-ként</button>
+    <label for="colorSelect">QR színe:</label>
+    <select id="colorSelect">
+      <option value="#000000">Fekete</option>
+      <option value="#1a73e8">Kék</option>
+      <option value="#e91e63">Rózsaszín</option>
+      <option value="#4caf50">Zöld</option>
+      <option value="#ff5722">Narancs</option>
+    </select>
 
-  <div id="qrcode"></div>
+    <div>
+      <button onclick="generateQRCode()">QR kód generálása</button>
+      <button onclick="downloadQRCode()">Letöltés PNG-ként</button>
+    </div>
+
+    <div id="qrcode"></div>
+  </div>
 
   <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
   <script>
@@ -53,7 +116,7 @@
     const qrContainer = document.getElementById("qrcode");
 
     function generateQRCode() {
-      const link = linkInput.value;
+      const link = linkInput.value.trim();
       const color = colorSelect.value;
 
       if (!link) {
@@ -74,7 +137,7 @@
     function downloadQRCode() {
       const canvas = qrContainer.querySelector("canvas");
       if (!canvas) {
-        alert("Előbb generálj egy QR kódot!");
+        alert("Előbb generálj QR kódot!");
         return;
       }
       const link = document.createElement("a");
@@ -84,8 +147,12 @@
       link.click();
     }
 
-    // Szín automatikus frissítése kiválasztáskor
-    colorSelect.addEventListener("change", generateQRCode);
+    // Automatikus frissítés színválasztáskor
+    colorSelect.addEventListener("change", () => {
+      if (linkInput.value.trim()) {
+        generateQRCode();
+      }
+    });
   </script>
 </body>
 </html>
