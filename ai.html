@@ -100,13 +100,15 @@
 </head>
 <body>
 
-  <header>
-    <h1>UsefulTools</h1>
-    <nav>
-      <a href="index.html">QR kód</a>
-      <a href="password.html">Jelszó</a>
-      <a href="ai.html">AI Kép</a>
-    </nav>
+  <!-- Navigáció -->
+  <nav>
+    <select id="navSelect" onchange="location = this.value;">
+      <option value="index.html">QR kód generátor</option>
+      <option value="password.html" selected>Jelszógenerátor</option>
+      <option value="ai.html">AI képgenerátor</option>
+    </select>
+  </nav>
+
   </header>
 
   <div class="container">
