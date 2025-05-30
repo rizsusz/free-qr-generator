@@ -16,7 +16,6 @@
       --button-hover: #1d4ed8;
     }
 
-
     [data-theme="dark"] {
       --bg: #111827;
       --card-bg: #1f2937;
@@ -150,6 +149,7 @@
   <script>
     const qrCanvas = document.getElementById('qrCanvas');
     const colorSelect = document.getElementById('colorSelect');
+    const linkInput = document.getElementById('linkInput');
 
     const qr = new QRious({
       element: qrCanvas,
@@ -159,7 +159,7 @@
     });
 
     function generateQR() {
-      const input = document.getElementById('linkInput').value.trim();
+      const input = linkInput.value.trim();
       const selectedColor = colorSelect.value;
       if (input === '') {
         alert('Kérlek, illessz be egy linket!');
@@ -170,6 +170,16 @@
         foreground: selectedColor
       });
     }
+
+    function updateQRColor() {
+      if (qr.value !== '') {
+        qr.set({
+          foreground: colorSelect.value
+        });
+      }
+    }
+
+    colorSelect.addEventListener('change', updateQRColor);
 
     function generateRandomName(length = 5) {
       const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
